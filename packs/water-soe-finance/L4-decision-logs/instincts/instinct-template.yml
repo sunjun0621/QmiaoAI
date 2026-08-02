@@ -1,0 +1,20 @@
+# Instinct 模板 v1.0
+#
+# Instinct 是从历史决策中提炼的"直觉经验卡片"。
+# 在 Gate-2 阶段按 domain 和 trigger 匹配，以参考形式附加到产出末尾（非阻断）。
+#
+# 置信度规则：
+#   confidence >= 0.7 → 自动应用并标注来源
+#   confidence <  0.7 → 仅提示，不自动应用
+#
+# 文件命名：{id}.yml，放在 L4-decision-logs/instincts/ 目录下
+
+id: ""                    # 唯一标识，如 budget-pipeline-priority（与文件名一致）
+trigger: ""               # 触发条件描述，如"当分析预算执行偏差时"
+action: ""                # 建议行为，如"优先检查管网维护费科目"
+confidence: 0.5           # 置信度：0.3 试探 / 0.5 中等 / 0.7 强 / 0.9 核心
+domain: []                # 领域标签数组，如 [budget, variance]
+evidence: ""              # 证据来源，如"财务人员在 2026-07 任务中纠正了此判断"
+scope: pack               # 作用域：project（仅当前项目）/ pack（整个经验包）
+created_at: ""            # 创建时间 YYYY-MM-DD
+updated_at: ""            # 更新时间 YYYY-MM-DD

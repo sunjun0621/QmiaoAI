@@ -1,0 +1,84 @@
+# L1 上下文规则 - 审计规则
+# 领域特定：水务行业勾稽校验 + 审计检查
+# 关键词触发加载
+# 引用语法: [L1:context:audit] 指向本文件，[L1:context:aud-xxx] 指向具体规则
+keywords: [勾稽, 审计, 校验, 折旧, 借款, 利息, 补贴, 报表, 平衡]
+
+checks:
+  # ========== 水务核心勾稽 ==========
+  - id: aud-wsoe-reconciliation
+    name: 水务核心勾稽 供水量-售水量-漏损量=产销差量
+    rule: "供水量 - 售水量 - 漏损量 == 产销差量"
+    severity: warn
+    message: "水务核心勾稽不平衡，差额 {diff}，请核查供售水数据"
+    variables:
+      diff: "水量差额"
+
+  - id: aud-water-revenue-match
+    name: 售水量与水费收入匹配
+    rule: "abs(售水量 * 综合水价 - 水费收入)/水费收入 > 0.05"
+    severity: warn
+    message: "售水量与水费收入不匹配，偏差 {diff}，请核查水价或水量数据"
+    variables:
+      diff: "偏差比例"
+
+  - id: aud-subsidy-income-check
+    name: 财政补贴收入完整性
+    rule: "output.contains('财政补贴') == false and output.contains('政府补助') == false"
+    severity: info
+    message: "水务国企通常有财政补贴，产出中未体现，建议确认是否遗漏"
+
+  - id: aud-depreciation-asset-match
+    name: 折旧与固定资产匹配
+    rule: "折旧额/固定资产原值 < 0.02 or 折旧额/固定资产原值 > 0.15"
+    severity: warn
+    message: "折旧率 {ratio} 异常（正常范围 2%-15%），请核查折旧政策"
+    variables:
+      ratio: "折旧率"
+
+  - id: aud-loan-interest-match
+    name: 借款利息与借款规模匹配
+    rule: "利息支出/借款余额 > 0.08 or 利息支出/借款余额 < 0.02"
+    severity: warn
+    message: "借款利率 {rate} 异常（正常范围 2%-8%），请核查借款结构"
+    variables:
+      rate: "实际利率"
+
+  # ========== 收入确认审计（从 accounting.yml 迁入） ==========
+  - id: aud-acc-gov-subsidy-recognition
+    name: 政府补助收入确认条件
+    rule: "output.contains('政府补助') == true and output.contains('确认条件') == false"
+    severity: info
+    message: "涉及政府补助收入，建议确认是否满足确认条件（能够满足相关条件且能够收到）"
+
+  - id: aud-acc-service-revenue-progress
+    name: 劳务收入履约进度确认
+    rule: "output.contains('劳务收入') == true and output.contains('履约进度') == false and output.contains('完工进度') == false"
+    severity: info
+    message: "涉及劳务收入，建议按履约进度确认收入（CAS 14 第十一条：在某一时段内履行的履约义务按履约进度确认收入）"
+
+  - id: aud-acc-water-revenue-period
+    name: 水费收入抄表周期确认
+    rule: "output.contains('水费收入') == true and output.contains('抄表') == false and output.contains('计量周期') == false"
+    severity: info
+    message: "涉及水费收入，建议明确抄表周期与收入确认期间的对应关系"
+
+  # ========== 借款费用审计（从 accounting.yml 迁入） ==========
+  - id: aud-acc-specialized-loan-capitalize
+    name: 专门借款资本化条件
+    rule: "output.contains('专门借款') == true and output.contains('资本化') == false"
+    severity: warn
+    message: "涉及专门借款但未说明资本化条件，符合资本化条件的专门借款利息应予资本化"
+
+  - id: aud-acc-general-loan-expense
+    name: 一般借款资本化与费用化检查
+    rule: "output.contains('一般借款') == true and output.contains('费用化') == false and output.contains('资本化') == false"
+    severity: warn
+    message: "涉及一般借款但未说明资本化/费用化处理，CAS 17 第七条：占用一般借款购建符合资本化条件资产的应计算资本化利息金额，其余计入当期损益"
+
+  # ========== 关联交易披露审计（从 accounting.yml 迁入） ==========
+  - id: aud-acc-related-party-disclosure
+    name: 关联方交易披露完整性
+    rule: "output.contains('关联交易') == true and output.contains('定价政策') == false and output.contains('交易金额') == false"
+    severity: info
+    message: "涉及关联交易但未完整披露定价政策和交易金额，建议补充关联方交易披露要素"

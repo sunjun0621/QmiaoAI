@@ -1,0 +1,22 @@
+# L1 上下文规则 - 预算执行
+# 领域特定：预算偏差、执行率检查
+# 关键词触发加载
+# 引用语法: [L1:context:variance] 指向本文件，[L1:context:var-xxx] 指向具体规则
+keywords: [预算, 执行率, 偏差, 预算执行, 预算偏差, 资本性支出, capex]
+
+checks:
+  - id: var-water-revenue-budget
+    name: 水费收入预算偏差
+    rule: "abs(实际水费收入-预算水费收入)/预算水费收入 > 0.10"
+    severity: warn
+    message: "水费收入预算偏差 {ratio}，超 10% 阈值"
+    variables:
+      ratio: "偏差比例"
+
+  - id: var-capex-budget-deviation
+    name: 资本性支出预算偏差
+    rule: "abs(实际资本性支出-预算资本性支出)/预算资本性支出 > 0.15"
+    severity: warn
+    message: "资本性支出预算偏差 {ratio}，超 15% 阈值"
+    variables:
+      ratio: "偏差比例"

@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Data layer - input/output (即用即弃，永不提交)
+data-buffer/input/*
+!data-buffer/input/.gitkeep
+data-buffer/output/*
+!data-buffer/output/.gitkeep
+
+# Data layer - templates (保留模板)
+!data-buffer/templates/
+
+# Pack user data
+packs/*/L3-cases/*-real.md
+packs/*/user-data/
+packs/*/L4-decision-logs/*.md
+!packs/*/L4-decision-logs/.gitkeep
+!packs/*/L4-decision-logs/decision-template.md
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak

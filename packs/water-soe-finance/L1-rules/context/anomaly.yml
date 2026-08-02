@@ -1,0 +1,83 @@
+# L1 上下文规则 - 异常阈值
+# 领域特定：水务行业异常阈值 + 通用异常检测
+# 关键词触发加载
+# 引用语法: [L1:context:anomaly] 指向本文件，[L1:context:anm-xxx] 指向具体规则
+keywords: [偏差, 异常, 波动, 产销差, 水费, 成本, 回收率, 同比, 环比, 变动]
+
+checks:
+  # ========== 水务行业阈值 ==========
+  - id: anm-nrw-variance
+    name: 产销差率超阈值
+    rule: "产销差率 > 0.15"
+    severity: warn
+    message: "产销差率 {nrw}，超 15% 阈值，请核查管网漏损"
+    variables:
+      nrw: "产销差率"
+
+  - id: anm-operating-cost-ratio
+    name: 运营成本占比异常
+    rule: "运营成本/营业收入 > 0.75"
+    severity: warn
+    message: "运营成本占收入比 {ratio}，超 75% 阈值，建议分析成本构成"
+    variables:
+      ratio: "成本占收比"
+
+  - id: anm-receivable-turnover
+    name: 水费回收率偏低
+    rule: "水费回收率 < 0.90"
+    severity: warn
+    message: "水费回收率 {ratio}，低于 90% 阈值，请关注应收账款"
+    variables:
+      ratio: "回收率"
+
+  - id: anm-yoy-revenue-change
+    name: 水费收入同比异常变动
+    rule: "abs(本期水费收入-上年同期水费收入)/上年同期水费收入 > 0.20"
+    severity: warn
+    message: "水费收入同比变动 {change}，超 20% 阈值"
+    variables:
+      change: "变动比例"
+
+  # ========== 通用异常检测（从 accounting.yml 迁入） ==========
+  - id: anm-acc-depreciation-life-building
+    name: 房屋建筑物折旧年限合规
+    rule: "房屋建筑物折旧年限 < 20"
+    severity: warn
+    message: "房屋建筑物折旧年限 {years} 年，低于税法最低年限 20 年（企业所得税法实施条例第六十条），请核查折旧政策"
+    variables:
+      years: "房屋建筑物折旧年限"
+
+  - id: anm-acc-depreciation-life-equipment
+    name: 机器设备折旧年限合规
+    rule: "机器设备折旧年限 < 10"
+    severity: warn
+    message: "机器设备折旧年限 {years} 年，低于税法最低年限 10 年（企业所得税法实施条例第六十条：机器、机械和其他生产设备为10年），请核查折旧政策"
+    variables:
+      years: "机器设备折旧年限"
+
+  - id: anm-acc-depreciation-life-pipeline
+    name: 管道折旧年限合规
+    rule: "管道折旧年限 < 10"
+    severity: warn
+    message: "管道折旧年限 {years} 年，低于常规最低年限 10 年（管道归类为生产设备时适用税法最低 10 年，归类为构筑物时适用最低 20 年），请核查折旧政策"
+    variables:
+      years: "管道折旧年限"
+
+  - id: anm-acc-intangible-asset-impairment
+    name: 无形资产减值检查
+    rule: "output.contains('无形资产') == true and output.contains('减值') == false and output.contains('摊销') == false"
+    severity: info
+    message: "涉及无形资产但未提及减值检查或摊销政策，建议补充无形资产减值测试和摊销说明"
+
+  # ========== 自检清单（领域特定部分） ==========
+  - id: anm-water-data-source
+    name: 供售水数据来源标注
+    rule: "output.contains('数据来源') == false"
+    severity: info
+    message: "建议在产出中标注供售水数据来源（如 SCADA 系统、营业收费系统）"
+
+  - id: anm-nrw-calc-transparency
+    name: 产销差计算过程透明
+    rule: "output.contains('产销差') == true and output.contains('供水量') == true and output.contains('售水量') == false"
+    severity: info
+    message: "产销差分析中缺少售水量数据，建议补充以展示完整计算过程"

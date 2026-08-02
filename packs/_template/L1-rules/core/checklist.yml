@@ -1,0 +1,19 @@
+# L1 核心规则 - 通用自检清单（模板）
+# 领域无关：脱敏检查、格式规范
+# 始终加载，不受关键词触发影响
+# 引用语法: [L1:core:checklist] 指向本文件，[L1:core:cls-xxx] 指向具体规则
+
+checks:
+  - id: cls-desensitize
+    name: 敏感信息扫描
+    rule: "output.contains('银行账号') or output.contains('身份证号') or output.contains('手机号')"
+    severity: alert
+    message: "产出中可能包含敏感信息（银行账号/身份证号/手机号），请确认已脱敏"
+
+  - id: cls-rounding-consistency
+    name: 小数位一致性
+    rule: "检查产出中金额的小数位数是否一致"
+    severity: info
+    message: "建议统一金额小数位数（如统一保留2位），保持格式一致性"
+
+  # 在此添加你的核心自检规则...

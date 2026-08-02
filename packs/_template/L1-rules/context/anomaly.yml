@@ -1,0 +1,34 @@
+# L1 上下文规则 - 异常阈值（模板）
+# 领域特定：行业异常阈值检测
+# 关键词触发加载
+# 引用语法: [L1:context:anomaly] 指向本文件，[L1:context:anm-xxx] 指向具体规则
+keywords: [偏差, 异常, 波动, 同比, 环比, 变动]
+
+checks:
+  - id: anm-variance-budget
+    name: 预算执行偏差超阈值
+    rule: "abs(实际-预算)/预算 > 0.10"
+    severity: warn
+    message: "{item}预算执行偏差{ratio}，超10%阈值"
+    variables:
+      item: "科目名称"
+      ratio: "偏差比例"
+
+  - id: anm-year-over-year
+    name: 同比变动超阈值
+    rule: "abs(本期-上年同期)/上年同期 > 0.20"
+    severity: warn
+    message: "{item}同比变动{change}，超20%阈值"
+    variables:
+      item: "科目名称"
+      change: "变动比例"
+
+  - id: anm-negative-balance
+    name: 余额为负
+    rule: "余额 < 0"
+    severity: warn
+    message: "{item}余额为负，请核查"
+    variables:
+      item: "科目名称"
+
+  # 在此添加你的自定义异常规则...

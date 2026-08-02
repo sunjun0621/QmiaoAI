@@ -1,0 +1,59 @@
+# L1 核心规则 - 会计核算通用规则（模板）
+# 领域无关：会计恒等式、借贷平衡、CAS 通用合规检查
+# 始终加载，不受关键词触发影响
+# 引用语法: [L1:core:accounting] 指向本文件，[L1:core:acc-xxx] 指向具体规则
+
+checks:
+  - id: acc-revenue-cost-profit
+    name: 收入-成本-费用=利润
+    rule: "收入 - 成本 - 费用 == 利润"
+    severity: warn
+    message: "核心勾稽关系不平衡，差额 {diff}，请核查"
+    variables:
+      diff: "计算差额"
+
+  - id: acc-balance-sheet-equation
+    name: 资产=负债+所有者权益
+    rule: "资产总计 == 负债合计 + 所有者权益合计"
+    severity: warn
+    message: "资产负债表不平衡，差额 {diff}，请核查"
+    variables:
+      diff: "计算差额"
+
+  - id: acc-depreciation-method-consistency
+    name: 折旧方法一致性
+    rule: "output.contains('折旧方法') == true and output.contains('直线法') == false and output.contains('年限平均法') == false and output.contains('工作量法') == false and output.contains('双倍余额递减法') == false and output.contains('年数总和法') == false"
+    severity: warn
+    message: "产出中提及折旧方法但未明确具体方法，CAS 4 允许年限平均法/工作量法/双倍余额递减法/年数总和法，方法一经确定不得随意变更（CAS 28）"
+
+  - id: acc-bad-debt-provision
+    name: 应收账款坏账准备计提
+    rule: "output.contains('应收账款') == true and output.contains('坏账准备') == false and output.contains('减值准备') == false and output.contains('预期信用损失') == false"
+    severity: alert
+    message: "涉及应收账款分析但未提及减值准备，应按 CAS 22 预期信用损失模型（ECL）计提坏账准备（财会〔2017〕7号第四十六至四十八条）"
+
+  - id: acc-fixed-asset-impairment
+    name: 固定资产减值测试
+    rule: "output.contains('固定资产减值') == true and output.contains('可收回金额') == false and output.contains('减值测试') == false"
+    severity: warn
+    message: "涉及固定资产减值但未提及可收回金额或减值测试，建议补充减值测试依据"
+
+  - id: acc-contingency-disclosure
+    name: 或有事项披露完整性
+    rule: "output.contains('诉讼') == true or output.contains('环保处罚') == true or output.contains('担保') == true"
+    severity: alert
+    message: "产出中涉及或有事项（诉讼/环保处罚/担保），应按企业会计准则披露预计负债或或有负债"
+
+  - id: acc-related-party-pricing
+    name: 关联方交易定价公允性
+    rule: "output.contains('关联交易') == true or output.contains('关联方') == true"
+    severity: warn
+    message: "涉及关联方交易，建议确认交易定价是否公允（参考独立第三方价格或成本加成法）"
+
+  - id: acc-capitalization-rate
+    name: 资本化率计算合规
+    rule: "output.contains('资本化率') == true and output.contains('加权平均') == false"
+    severity: warn
+    message: "涉及资本化率计算但未提及加权平均，资本化率应按一般借款加权平均利率计算"
+
+  # 在此添加你的核心规则...（建议总数 <= 10 条）

@@ -1,0 +1,9 @@
+id: cashflow-operating-classification
+trigger: "当编制现金流量表时"
+action: "注意经营性现金流分类，财政补贴和利息支出的分类归属需与会计政策一致"
+confidence: 0.5
+domain: [cashflow, classification]
+evidence: "2026-07 月度分析中，财政补贴本期为 0 但预算有 50 万，存在跨期确认和分类模糊风险"
+scope: pack
+created_at: "2026-08-02"
+updated_at: "2026-08-02"

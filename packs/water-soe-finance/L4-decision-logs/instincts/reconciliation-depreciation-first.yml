@@ -1,0 +1,9 @@
+id: reconciliation-depreciation-first
+trigger: "当勾稽校验不平衡时"
+action: "先核对折旧科目，折旧计提不足或分类错误是最常见的勾稽不平原因"
+confidence: 0.9
+domain: [audit, reconciliation]
+evidence: "2026-07 月度分析中，折旧率 0.19% 低于正常范围，触发 depreciation-asset-match 规则提示"
+scope: pack
+created_at: "2026-08-02"
+updated_at: "2026-08-02"
