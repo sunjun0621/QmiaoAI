@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-经验包校验工具 v4.0
+经验包校验工具 v1.0
 用法: python validate_pack.py packs/your-pack/
 
-v4.0 变更:
+v1.0 变更:
 - 无 pack.yml，改为纯约定扫描校验
 - 校验 L1-rules/ L2-templates/ L3-cases/ L4-decision-logs/ 四层目录
 - L4-decision-logs/ 可为空（首次使用）
@@ -16,7 +16,7 @@ import re
 
 
 def validate_pack(pack_dir):
-    """校验经验包（v4.0 L1-L4 结构）"""
+    """校验经验包（v1.0 L1-L4 结构）"""
     errors = []
     warnings = []
     info = []
@@ -134,7 +134,7 @@ def main():
     errors, warnings, info = validate_pack(pack_dir)
 
     print("=" * 50)
-    print("经验包校验报告 (v4.0)")
+    print("经验包校验报告 (v1.0)")
     print("=" * 50)
 
     for i in info:

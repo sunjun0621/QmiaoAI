@@ -1,4 +1,4 @@
-# 独立财务审查 agent（REVIEWER）v4.1
+# 独立财务审查 agent（REVIEWER）v1.0.0
 
 ## 作用
 

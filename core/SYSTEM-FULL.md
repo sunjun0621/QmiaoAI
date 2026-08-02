@@ -1,4 +1,4 @@
-# 钱喵 AI 财务助手 - 核心系统指令 v4.3
+# 钱喵 AI 财务助手 - 核心系统指令 v1.0.0
 
 ## 身份
 
@@ -123,7 +123,7 @@ Gate-2 通过后，产出写入 `data-buffer/output/`，同时 AI 自动在当�
 
 ---
 
-# 经验包加载器（PACK_LOADER）v4.3
+# 经验包加载器（PACK_LOADER）v1.0.0
 
 ## 作用
 
@@ -131,7 +131,7 @@ Gate-2 通过后，产出写入 `data-buffer/output/`，同时 AI 自动在当�
 
 ## 纯约定扫描
 
-v4.0 去掉了 pack.yml，改为目录约定扫描。引擎自动识别经验包结构和元数据。v4.3 新增 L1 两层拆分。
+本项目去掉了 pack.yml，改为目录约定扫描。引擎自动识别经验包结构和元数据。新增 L1 两层拆分。
 
 ### 扫描流程
 
@@ -167,7 +167,7 @@ packs/{pack-id}/
 └── README.md          # 经验包说明（可选，用于推断元数据）
 ```
 
-### L1 两层加载机制（v4.3 新增）
+### L1 两层加载机制（新增）
 
 L1 规则拆分为 core 和 context 两层，解决全量加载导致的上下文膨胀问题：
 
@@ -230,7 +230,7 @@ checks:
 | version | README.md 中的版本标注，或 `1.0.0` | `1.0.0` |
 | domain | README.md 中的领域标注 | pack-id |
 | keywords | 扫描 L1 core 规则 name 字段 + L1 context 文件 keywords + L3 案例标题 + README.md 关键词行 | 空 |
-| compatibility | 默认兼容 `>=4.0.0` | `>=4.0.0` |
+| compatibility | 默认兼容 `>=1.0.0` | `>=1.0.0` |
 
 ## 触发机制
 
@@ -314,7 +314,7 @@ L4 决策记录由 AI 在每次 Gate-2 通过后自动写入，无需用户手�
 
 ---
 
-# 规则扫描器（RULE_SCANNER）v4.3
+# 规则扫描器（RULE_SCANNER）v1.0.0
 
 ## 作用
 
@@ -394,7 +394,7 @@ core 规则不标注"按需加载"：
     diff: "计算差额"
 ```
 
-### 模板引用型（v4.0 新增）
+### 模板引用型（新增）
 
 规则通过引用语法声明与模板的关联：
 
@@ -448,7 +448,7 @@ L4 参考提示格式：
   决策来源：L4-decision-logs/2026-07-15-budget-anomaly.md
 ```
 
-### evidence_chain 证据链（v4.3 新增）
+### evidence_chain 证据链（新增）
 
 L4 决策记录新增 `## 证据链` 章节，记录从输入数据到最终产出的全链路证据追踪。规则扫描时加载 evidence_chain 用于：
 
@@ -511,7 +511,7 @@ evidence_chain 是 L4 决策记录的内部章节，不使用独立的引用语�
 
 evidence_chain 和 Instinct 互补：evidence_chain 提供完整的历史任务上下文，Instinct 提供从历史任务中提炼的精炼经验。规则扫描时两者独立加载，各自输出参考提示。
 
-## Instinct 召回（v4.1 新增）
+## Instinct 召回（新增）
 
 规则扫描完成后，引擎扫描 L4-decision-logs/instincts/ 目录下的所有 instinct YAML 文件，按 domain 和 trigger 匹配当前任务上下文，将命中的 instinct 作为参考附加到产出末尾。
 
@@ -838,7 +838,7 @@ Gate-2 校验完成后（无论是否有提示），AI 自动在当前经验包�
 
 ## 标识符解析规则
 
-### L1 规则解析（v4.3 两层结构）
+### L1 规则解析（两层结构）
 
 L1 引用支持三种语法，按显式程度从高到低：
 
@@ -854,13 +854,13 @@ L1 引用支持三种语法，按显式程度从高到低：
 
 匹配失败时输出提示：`[L1:xxx] 未找到匹配项，请检查标识符`，不中断处理。
 
-> **向后兼容**：若 `L1-rules/` 下无 `core/` 和 `context/` 子目录（旧格式），`[L1:name]` 直接在 `L1-rules/` 下查找，行为与 v4.2 一致。
+> **向后兼容**：若 `L1-rules/` 下无 `core/` 和 `context/` 子目录（旧格式），`[L1:name]` 直接在 `L1-rules/` 下查找，行为一致。
 
 ## 使用场景
 
 ### 场景一：L2 模板引用 L1 规则（声明产出约束）
 
-L2 模板在头部声明本模板产出必须满足的 L1 规则。v4.3 推荐使用显式 core/context 语法：
+L2 模板在头部声明本模板产出必须满足的 L1 规则。推荐使用显式 core/context 语法：
 
 ```markdown
 ---
@@ -916,7 +916,7 @@ L4 决策记录中引用本次处理使用的规则、模板和案例：
 
 L4 决策记录中的 `## 证据链` 章节记录从输入到产出的全链路证据追踪。通过 `[L4:name]` 引用决策记录时，引擎自动加载该记录的全部内容（含 evidence_chain）到处理上下文，无需独立引用语法。evidence_chain 的加载和匹配规则详见 `core/RULE_SCANNER.md` 的 "evidence_chain 证据链" 章节。
 
-### 场景五：Instinct 引用（v4.1 新增）
+### 场景五：Instinct 引用（新增）
 
 在 L2 模板、L3 案例或用户指令中引用特定 instinct，使引擎在处理时加载该 instinct 并按其 confidence 执行：
 
@@ -972,12 +972,12 @@ L4 决策记录中的 `## 证据链` 章节记录从输入到产出的全链路�
 - `[REVIEWER]` 是引擎层引用，指向 `core/REVIEWER.md`，不依赖经验包——所有经验包共享同一审查 agent 行为规则
 - `[REVIEWER]` 无参数，不需要标识符，引用即加载完整审查行为规则
 - `## 证据链` 是 L4 决策记录的内部章节，不使用独立引用语法，通过 `[L4:name]` 引用记录时全量加载
-- `[L1:core:name]` 和 `[L1:context:name]` 是 v4.3 新增的显式语法，推荐在 L2 模板 rules 声明中使用
+- `[L1:core:name]` 和 `[L1:context:name]` 是 新增的显式语法，推荐在 L2 模板 rules 声明中使用
 - `[L1:name]` 默认语法保持向后兼容：有 core/context 子目录时先查 core 再查 context，无子目录时直接查 L1-rules/
 
 ---
 
-# 独立财务审查 agent（REVIEWER）v4.1
+# 独立财务审查 agent（REVIEWER）v1.0.0
 
 ## 作用
 

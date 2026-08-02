@@ -1,8 +1,8 @@
 {
-  "version": "4.3.0",
-  "codename": "qianxiaomiao",
+  "version": "1.0.0",
+  "codename": "qmiao",
   "release_date": "2026-08-02",
-  "description": "钱小喵 AI 财务助手 - 三层分离架构（引擎层 + 配置层 + 数据层），v4.3 L1 规则两层拆分（core 始终加载 + context 按关键词触发）",
+  "description": "钱喵 AI 财务助手 - 三层分离架构（引擎层 + 配置层 + 数据层），L1 规则两层加载（core 始终加载 + context 按关键词触发）",
   "principles": [
     "数据责任归用户，AI 不越界",
     "用户自主可控，AI 持续进化",
@@ -15,28 +15,24 @@
   },
   "pack_structure": ["L1-rules/core", "L1-rules/context", "L2-templates", "L3-cases", "L4-decision-logs", "L4-decision-logs/instincts"],
   "engine_modules": ["SYSTEM.md", "PACK_LOADER.md", "RULE_SCANNER.md", "GATE.md", "REF_SYNTAX.md", "REVIEWER.md", "VERSION.json"],
-  "min_pack_version": "4.0.0",
+  "min_pack_version": "1.0.0",
   "changelog": {
-    "4.3.0": [
-      "L1 规则两层拆分：core/（始终加载，领域无关通用规则，<=10条）+ context/（关键词触发加载，领域特定规则）",
-      "PACK_LOADER 新增 L1 两层扫描逻辑：core 全量加载，context 注册关键词清单并按命中加载",
-      "RULE_SCANNER 区分 core/context 规则扫描范围，context 规则标注'按需加载'来源",
-      "GATE-1 输出显示'本次加载规则：core(全部) + context(命中的文件列表)'",
-      "REF_SYNTAX 新增 [L1:core:name] [L1:context:name] 引用语法，[L1:name] 默认先查 core 再查 context",
-      "water-soe-finance 经验包 33 条规则完成 core/context 拆分：core 10 条 + context 23 条（3 文件）",
-      "_template 经验包同步调整为 core/context 两层结构"
-    ],
-    "4.2.0": [
-      "新增独立财务审查 agent（REVIEWER），Gate-2 拆分为规则扫描 + 独立审查两环节",
-      "新增 core/REVIEWER.md 定义审查 agent 行为规则",
-      "Gate-2 校验项从 4 项增至 5 项，第 5 项为独立财务审查"
-    ],
-    "4.1.0": [
-      "新增 Instinct 直觉经验卡片机制（L4-decision-logs/instincts/）",
-      "RULE_SCANNER 新增 Instinct 召回章节，按 domain 和 trigger 匹配",
-      "GATE-2 新增第 4 项校验：Instinct 召回，confidence 分流（>=0.7 自动应用 / <0.7 仅提示）",
-      "REF_SYNTAX 新增 [L4:instinct:name] 引用语法",
-      "3 条示例 instinct 覆盖预算偏差/勾稽校验/现金流分类场景"
+    "1.0.0": [
+      "三层分离架构：引擎层 core/ + 配置层 packs/ + 数据层 data-buffer/",
+      "四层经验包结构：L1 规则 + L2 模板 + L3 案例 + L4 决策记录",
+      "L1 规则两层加载：core/（始终加载，领域无关通用规则，<=10条）+ context/（关键词触发加载，领域特定规则）",
+      "两级 Gate 机制（Gate-1 数据准入 + Gate-2 产出校验），均为非阻断式",
+      "Gate-2 拆分为规则扫描 + 独立审查（REVIEWER）两个独立环节",
+      "独立审查 agent（REVIEWER）：预报告门控四问、误报清单、五维度审查",
+      "Instinct 直觉经验召回机制（confidence 分流：>=0.7 自动应用 / <0.7 仅提示）",
+      "引用语法：[L1:core:name] [L1:context:name] [L1:name] [L2:name] [L3:name] [L4:name] [L4:instinct:name] [REVIEWER]",
+      "纯约定扫描（无 pack.yml），元数据从文件内容推断",
+      "3 个 Python 工具：init_pack.py / validate_pack.py / scan_pack.py",
+      "water-soe-finance 经验包：33 条规则、7 个模板、15 个案例、4 条 instinct",
+      "_template 空白经验包模板",
+      "平台适配器（千帆 + 通用）",
+      "安全扫描工具（prompt injection 检测，Alert/Warn/Info 三级）",
+      "MIT 许可证"
     ]
   }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-经验包安全扫描工具 v4.0
+经验包安全扫描工具 v1.0
 用法:
   python scan_pack.py packs/water-soe-finance/
   python scan_pack.py --all

@@ -1,4 +1,4 @@
-# 规则扫描器（RULE_SCANNER）v4.3
+# 规则扫描器（RULE_SCANNER）v1.0.0
 
 ## 作用
 
@@ -78,7 +78,7 @@ core 规则不标注"按需加载"：
     diff: "计算差额"
 ```
 
-### 模板引用型（v4.0 新增）
+### 模板引用型（新增）
 
 规则通过引用语法声明与模板的关联：
 
@@ -132,7 +132,7 @@ L4 参考提示格式：
   决策来源：L4-decision-logs/2026-07-15-budget-anomaly.md
 ```
 
-### evidence_chain 证据链（v4.3 新增）
+### evidence_chain 证据链（新增）
 
 L4 决策记录新增 `## 证据链` 章节，记录从输入数据到最终产出的全链路证据追踪。规则扫描时加载 evidence_chain 用于：
 
@@ -195,7 +195,7 @@ evidence_chain 是 L4 决策记录的内部章节，不使用独立的引用语�
 
 evidence_chain 和 Instinct 互补：evidence_chain 提供完整的历史任务上下文，Instinct 提供从历史任务中提炼的精炼经验。规则扫描时两者独立加载，各自输出参考提示。
 
-## Instinct 召回（v4.1 新增）
+## Instinct 召回（新增）
 
 规则扫描完成后，引擎扫描 L4-decision-logs/instincts/ 目录下的所有 instinct YAML 文件，按 domain 和 trigger 匹配当前任务上下文，将命中的 instinct 作为参考附加到产出末尾。
 

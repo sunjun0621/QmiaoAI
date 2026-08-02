@@ -1,4 +1,4 @@
-# 经验包加载器（PACK_LOADER）v4.3
+# 经验包加载器（PACK_LOADER）v1.0.0
 
 ## 作用
 
@@ -6,7 +6,7 @@
 
 ## 纯约定扫描
 
-v4.0 去掉了 pack.yml，改为目录约定扫描。引擎自动识别经验包结构和元数据。v4.3 新增 L1 两层拆分。
+本项目去掉了 pack.yml，改为目录约定扫描。引擎自动识别经验包结构和元数据。新增 L1 两层拆分。
 
 ### 扫描流程
 
@@ -42,7 +42,7 @@ packs/{pack-id}/
 └── README.md          # 经验包说明（可选，用于推断元数据）
 ```
 
-### L1 两层加载机制（v4.3 新增）
+### L1 两层加载机制（新增）
 
 L1 规则拆分为 core 和 context 两层，解决全量加载导致的上下文膨胀问题：
 
@@ -105,7 +105,7 @@ checks:
 | version | README.md 中的版本标注，或 `1.0.0` | `1.0.0` |
 | domain | README.md 中的领域标注 | pack-id |
 | keywords | 扫描 L1 core 规则 name 字段 + L1 context 文件 keywords + L3 案例标题 + README.md 关键词行 | 空 |
-| compatibility | 默认兼容 `>=4.0.0` | `>=4.0.0` |
+| compatibility | 默认兼容 `>=1.0.0` | `>=1.0.0` |
 
 ## 触发机制
 

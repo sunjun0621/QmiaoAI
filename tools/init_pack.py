@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-经验包初始化工具 v4.0
+经验包初始化工具 v1.0
 用法: python init_pack.py <pack-id> <pack-name>
 示例: python init_pack.py manufacturing "制造业财务经验包"
 
-v4.0 变更: 无 pack.yml，纯约定扫描。从 _template 复制 L1-L4 四层目录结构。
+v1.0 变更: 无 pack.yml，纯约定扫描。从 _template 复制 L1-L4 四层目录结构。
 """
 
 import sys
@@ -68,7 +68,7 @@ def init_pack(pack_id, pack_name):
 
     print()
     print("=" * 50)
-    print("经验包已创建（v4.0 纯约定扫描，无 pack.yml）")
+    print("经验包已创建（v1.0 纯约定扫描，无 pack.yml）")
     print("下一步操作：")
     print(f"  1. 编辑 packs/{pack_id}/README.md 填写经验包说明")
     print(f"  2. 编辑 packs/{pack_id}/L1-rules/ 下的规则文件")
