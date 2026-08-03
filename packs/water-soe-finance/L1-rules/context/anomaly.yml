@@ -2,7 +2,7 @@
 # 领域特定：水务行业异常阈值 + 通用异常检测
 # 关键词触发加载
 # 引用语法: [L1:context:anomaly] 指向本文件，[L1:context:anm-xxx] 指向具体规则
-keywords: [偏差, 异常, 波动, 产销差, 水费, 成本, 回收率, 同比, 环比, 变动]
+keywords: [偏差, 异常, 波动, 产销差, 水费, 成本, 回收率, 同比, 环比, 变动, 权益变动表, 列错位, 少数股东, 所有者权益合计]
 
 checks:
   # ========== 水务行业阈值 ==========
@@ -81,3 +81,31 @@ checks:
     rule: "output.contains('产销差') == true and output.contains('供水量') == true and output.contains('售水量') == false"
     severity: info
     message: "产销差分析中缺少售水量数据，建议补充以展示完整计算过程"
+
+  # ========== 用友报表解析异常 ==========
+  - id: anm-yonyou-equity-column-swap
+    name: 权益变动表列映射错误检测
+    rule: "权益变动表'所有者权益合计'列全为0 and '少数股东权益'列有非零值"
+    severity: alert
+    message: "权益变动表'所有者权益合计'列全为0，而'少数股东权益'列含有非零值（{minority_value}），疑似解析器列索引偏移或用友导出列错位。全资子公司少数股东权益应为0。请使用 tools/equity_column_fix.py check-json 检测，或在解析时修正列映射。"
+    variables:
+      minority_value: "少数股东权益列期末值"
+    auto_fix:
+      tool: "tools/equity_column_fix.py"
+      check_json: "python tools/equity_column_fix.py check-json <解析后JSON路径>"
+      check_excel: "python tools/equity_column_fix.py check <excel文件路径>"
+      fix_excel: "python tools/equity_column_fix.py fix <excel文件路径> --output <输出路径>"
+    detection_logic: |
+      1. 检查解析后JSON中equity_statement的"所有者权益合计"键是否全为0
+      2. 检查"少数股东权益"键是否有非零值
+      3. 若同时满足1和2，判定为列映射错误
+      4. 附加验证: "少数股东权益"列期末值是否等于资产负债表所有者权益合计(确认数据被错放)
+      5. 修正方法: 在解析器的col_labels中将"少数股东权益"和"所有者权益合计"的列索引对调
+    root_cause: |
+      解析器 parse_equity_statement() 的 col_labels 映射中，将 row[14]（Excel O列=所有者权益合计）
+      误标为"少数股东权益"，将 row[15]（Excel P列=上年金额/空列）误标为"所有者权益合计"。
+      正确映射应为: row[13]=少数股东权益(N列), row[14]=所有者权益合计(O列)。
+    history: |
+      TR-003(2026-08-03)首次发现: 某水务子公司2026年7月报表，
+      解析后JSON中"所有者权益合计"键全为0，"少数股东权益"键含实际权益数据（非零）。
+      根因: parse_report_v2.py 的 col_labels 中少数股东权益和所有者权益合计的列索引偏移1位。

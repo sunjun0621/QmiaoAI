@@ -44,9 +44,33 @@
 
 ## 数据输入
 
-1. 将脱敏数据通过 `data-buffer/input/` 或直接在对话中提供
-2. 支持 CSV、Excel（需转换）、纯文本格式
-3. 千帆平台支持文件上传，可直接上传 CSV 文件
+### 方式 A：使用 file_bridge.py 自动转换（推荐）
+
+```bash
+python tools/file_bridge.py input <文件路径> [--name <重命名>]
+```
+
+支持 PDF、DOC、DOCX、XLSX、XLS、PPTX、TXT、MD、CSV 格式，自动转换为 Markdown 写入 `data-buffer/input/`。扫描版 PDF 自动启用 PaddleOCR 补救转换。
+
+转换完成后，将 `data-buffer/input/` 中的 Markdown 文件内容粘贴到对话中即可。
+
+### 方式 B：千帆平台直接上传
+
+1. 千帆平台支持文件上传，可直接上传 CSV 文件
+2. 或手动将数据粘贴到对话中
+
+> 详见 `docs/file-bridge-guide.md`。
+
+## 产出归档
+
+QmiaoAI 产出写入 `data-buffer/output/` 后，使用 file_bridge.py 归档到知识库：
+
+```bash
+python tools/file_bridge.py output --dry-run   # 预览建议分类
+python tools/file_bridge.py output              # 执行归档
+```
+
+自动按内容关键词分类到 `01_数据报表`、`02_财务分析`、`03_运用资料`、`04_归档`，支持去重和元数据标注。
 
 ## 已知限制
 
